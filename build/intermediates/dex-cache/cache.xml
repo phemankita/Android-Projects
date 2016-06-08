@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-23.4.0_a627b60dd13028d5b5e22858c8157feaade10a87\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-23.4.0_bf5aee55bdabd4a614c39e91c84d139712c2bc9c\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="fe7915f6d1bc070a2b06e60f65495da2679c529a">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_364cba9898a003b1f2634c599a6fc957bde6d1d6\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.4.0_5e282b4a76a36281b11b5c55917069c84b7b9998\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.4.0_a043ffc4ff9c64767c4a52de3a20879d583ccabf\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.4.0_0245a32dcbd87b3f61e1b42de4a03e183b0279ea\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.4.0_0110c7d57a2f5311adb3fd98a5e2358967cb6901\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-23.4.0_468a70eb3fef52439cb267203462a4523b81c498\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="98cfb1df7dab02f25c6631e615237f32972321aa">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_c454250a833fc74dbcb4a5815676bd1685a9e95f\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Hemankita\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="C:\Users\Hemankita\phemankita\MyFirstApp\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-23.4.0_f481b2a8b40ad663e66e9db2eb95d4bf7c4a7a32\classes.dex" />
+    </item>
+
+</items>
