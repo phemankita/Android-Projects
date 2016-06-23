@@ -7,8 +7,7 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.hemankita.myproject.ComposeActivity"
-    tools:showIn="@layout/activity_compose"
-    android:weightSum="1">
+    tools:showIn="@layout/activity_compose">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,8 +17,7 @@
         android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.hemankita.myproject.ComposeActivity"
-        tools:showIn="@layout/activity_compose"
-        android:weightSum="1">
+        tools:showIn="@layout/activity_compose">
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,6 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/toText"
+            android:textSize="30dp"
+            android:hint="@string/sender"
             android:layout_marginRight="10dp"/>
 
     </LinearLayout>
@@ -40,7 +40,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/subject_line"
+        android:hint="@string/subject_line"
         android:textSize="30dp"
         android:id="@+id/subjectText"
         android:layout_marginLeft="10dp"
@@ -55,7 +55,7 @@
         android:layout_weight="0.70"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Body"
+        android:hint="@string/body"
         android:textSize="30dp"
         android:gravity="start"/>
 
@@ -71,26 +71,37 @@
         android:weightSum="1">
 
         <ImageButton
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:id="@+id/trashButton"
             android:src="@drawable/ic_delete_black_24dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="bottom"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            />
 
         <Button
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:text="Save"
             android:id="@+id/saveComposeButton"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"/>
+            android:layout_gravity="bottom"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            />
 
         <ImageButton
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:id="@+id/hourglassButton"
             android:src="@drawable/ic_hourglass_empty_black_24dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:layout_gravity="bottom" />
 
     </LinearLayout>
 </LinearLayout>

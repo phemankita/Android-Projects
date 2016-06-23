@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/settingsButton"
         android:src="@drawable/ic_settings_black_24dp"
+        android:layout_marginLeft="10dp"
         />
     <View
         android:layout_width="0dp"
@@ -50,7 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/composeButton"
-        android:src="@drawable/ic_mode_edit_black_24dp" />
+        android:src="@drawable/ic_mode_edit_black_24dp"
+        android:layout_marginRight="10dp"/>
 
 </LinearLayout>
 
@@ -58,7 +60,10 @@
     <ListView
         android:id="@+id/message_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1">
     </ListView>
 
 </LinearLayout>

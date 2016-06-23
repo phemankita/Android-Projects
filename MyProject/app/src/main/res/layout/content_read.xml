@@ -18,8 +18,7 @@
         android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.hemankita.myproject.ReadActivity"
-        tools:showIn="@layout/activity_read"
-        android:weightSum="1">
+        tools:showIn="@layout/activity_read">
 
 
         <TextView
@@ -39,7 +38,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="TTL"
             android:textSize="30dp"
             android:id="@+id/countDown"
@@ -56,7 +55,7 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="Subject Line"
         android:textSize="30dp"
         android:id="@+id/subjectLineText"
@@ -72,7 +71,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="wrap_content"
         android:text="Body"
         android:textSize="30dp"
         android:id="@+id/bodyRead"
@@ -88,14 +87,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.hemankita.myproject.ReadActivity"
         tools:showIn="@layout/activity_read"
-        android:weightSum="1">
+        android:layout_weight="1">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:id="@+id/trashReadButton"
             android:src="@drawable/ic_delete_black_24dp"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="bottom"/>
 
         <View
             android:layout_width="0dp"
@@ -104,11 +104,12 @@
             />
 
         <Button
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="60dp"
             android:text="Reply"
             android:id="@+id/replyButton"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:layout_gravity="bottom" />
     </LinearLayout>
 
 </LinearLayout>

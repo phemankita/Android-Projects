@@ -41,6 +41,7 @@ public class ContactsActivity extends AppCompatActivity {
         conArray.add(new Contact("Contact2"));
         conArray.add(new Contact("Contact3"));
         conArray.add(new Contact("Contact4"));
+        conArray.add(new Contact("Contact5"));
         //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_contactlistview, mobileArray);
         ContactListAdapter adapter=new ContactListAdapter(ContactsActivity.this,R.layout.activity_contactlistview,conArray);
 
@@ -65,14 +66,6 @@ public class ContactsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

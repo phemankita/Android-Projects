@@ -12,32 +12,58 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Server Address"
+        android:hint="@string/serverAddress"
         android:id="@+id/serverAddress"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         />
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/ic_person_black_large_24dp"
         android:id="@+id/imagePerson"
          />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:hint="@string/name"
         android:ems="10"
         android:id="@+id/personName"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Public/Private key pair"
+        android:hint="@string/keyPair"
         android:id="@+id/keyPair"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         />
 
 
