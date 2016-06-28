@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="Name"
-        android:textSize="30dp"
+
         android:id="@+id/name_Contact"
         android:gravity="center"
         android:layout_marginLeft="10dp"
@@ -21,10 +21,10 @@
         />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/SettingsContactButton"
-        android:src="@drawable/ic_settings_black_24dp"
+        android:src="@drawable/ic_settings_black_24dp_mdpi"
         android:layout_marginRight="10dp"
         android:onClick="settingsContact"/>
 </LinearLayout>

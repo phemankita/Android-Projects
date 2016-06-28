@@ -11,7 +11,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:hint="@string/serverAddress"
         android:id="@+id/serverAddress"
         android:layout_marginLeft="10dp"
@@ -25,10 +25,11 @@
         />
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_gravity="center"
         android:background="@drawable/ic_person_black_large_24dp"
         android:id="@+id/imagePerson"
          />
@@ -41,7 +42,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="@string/name"
         android:ems="10"
@@ -57,7 +58,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:hint="@string/keyPair"
         android:id="@+id/keyPair"
         android:layout_weight="1"

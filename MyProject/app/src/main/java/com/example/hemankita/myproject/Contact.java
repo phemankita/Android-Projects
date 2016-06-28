@@ -4,21 +4,46 @@ package com.example.hemankita.myproject;
  * Created by Hemankita on 6/18/2016.
  */
 public class Contact {
-    private String name;
+    private String username;
+    private String image;
+    private String publickey;
+    public Contact(){
 
-    public Contact(String name){
-       this.setContact(name);
     }
 
-    public String getContact() {return name;}
+    public Contact(String username,String image,String publickey){
+       this.username=username;
+       this.image=image;
+       this.publickey=publickey;
+    }
 
-    public void setContact(String name)
+    public String getContact()
     {
-        this.name=name;
+        return username;
     }
 
-    public String toString()
+    public String getImage()
     {
-        return name;
+        return image;
     }
+
+    public String getPublickey()
+    {
+        return publickey;
+    }
+
+    public void setContact(String username)
+    {
+        this.username=username;
+    }
+
+    public void setImage(String image)
+    {
+        this.image=image;
+    }
+    public void setPublickey(String publickey)
+    {
+        this.publickey=publickey;
+    }
+
 }

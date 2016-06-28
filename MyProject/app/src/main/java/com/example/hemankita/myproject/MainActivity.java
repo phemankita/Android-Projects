@@ -1,25 +1,51 @@
 package com.example.hemankita.myproject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-
+import android.widget.Toast;
+import java.io.StringWriter;
+import java.security.KeyPair;
+import java.security.Security;
+import java.security.SecureRandom;
+import java.security.spec.RSAKeyGenParameterSpec;
+import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemWriter;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static String DEBUG = "PUBLIC/PRIVATE KEY";
+    public static final String MyPREFERENCES = "MyPreferences" ;
+    public static final String PUBLICKEY = "PublicKey";
+    public static final String PRIVATEKEY = "PrivateKey";
+    SharedPreferences sharedpreferences;
 
+    KeyPair keyPair;
+
+    static {
+        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+    }
     ImageButton settings_button,contact_button,compose_button;
     ArrayList<Message> msgArray = new ArrayList<Message>();
 
@@ -27,6 +53,65 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            SecureRandom random = new SecureRandom();
+            RSAKeyGenParameterSpec spec = new RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4);
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA","SC");
+            generator.initialize(spec,random);
+
+            keyPair = generator.generateKeyPair();
+
+            Log.i(DEBUG,"GOT KEY!");
+
+            StringWriter writer = new StringWriter();
+            PemWriter pemWriter = new PemWriter(writer);
+            pemWriter.writeObject(new PemObject("PUBLIC KEY",keyPair.getPublic().getEncoded()));
+            pemWriter.flush();
+            pemWriter.close();
+            Log.i("Public",keyPair.getPrivate().toString());
+            Log.i("Private",keyPair.getPublic().toString());
+            sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+            String public_key=keyPair.getPublic().toString();
+            String private_key=keyPair.getPrivate().toString();
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString(PUBLICKEY, public_key);
+            editor.putString(PRIVATEKEY, private_key);
+            editor.commit();
+            //Toast.makeText(MainActivity.this,"Thanks", Toast.LENGTH_LONG).show();
+            //assert ((TextView)findViewById(R.id.keyPair)) != null;
+            //((TextView)findViewById(R.id.publickeyfield)).setText(writer.toString());
+
+
+            //writer = new StringWriter();
+            //pemWriter = new PemWriter(writer);
+            //pemWriter.writeObject(new PemObject("PRIVATE KEY",myKeyPair.getPrivate().getEncoded()));
+            //pemWriter.flush();
+            //pemWriter.close();
+            //((TextView)findViewById(R.id.private_key_field)).setText(writer.toString());
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+        catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       /* String init = "";
+        for(int i=0;i<85;i++){
+            init += "a";
+        }
+        Log.d(DEBUG,init);
+        encryptToBase64(init);*/
+        //((EditText)findViewById(R.id.keyPair)).setText(init);
+
+
+
         msgArray.add(new Message("Message1 | Subject1",5));
         msgArray.add(new Message("Message2 | Subject2",60));
         msgArray.add(new Message("Message3 | Subject3",15));
@@ -79,7 +164,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private String encryptToBase64(String clearText){
+        try {
+            Log.d(DEBUG,"clear text is of length "+clearText.getBytes().length);
+            Cipher rsaCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding","SC");
+            rsaCipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
+            byte[] bytes = rsaCipher.doFinal(clearText.getBytes());
+            Log.d(DEBUG,"cipher bytes is of length "+bytes.length);
+            Log.d(DEBUG,"");
 
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
