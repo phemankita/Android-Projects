@@ -1,12 +1,15 @@
 package com.example.hemankita.myproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,17 +17,48 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
+
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 public class ComposeActivity extends AppCompatActivity {
     ImageButton trash_button,hourglass_button;
     Button save_button;
     EditText to_text;
+    String cId,cName;
+    PublicKey pKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
         to_text = (EditText) findViewById(R.id.toText);
-
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null) {
+            cId = intent.getStringExtra("NAME");
+            cName = intent.getStringExtra("REPLY");
+            //Log.i("Value of contact name", cId);
+            if(cId!=null){
+            to_text.setText(cId);}
+            else{
+                to_text.setText(cName);
+            }
+        }
+        //String h=intent.getIntExtra("URTEXT", 0);
         // Capture button clicks
         to_text.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
@@ -35,6 +69,13 @@ public class ComposeActivity extends AppCompatActivity {
                 startActivity(textIntent);
             }
         });
+
+       /* String init = "";
+        for(int i=0;i<85;i++){
+            init += "a";
+        }*/
+
+
 
         trash_button = (ImageButton) findViewById(R.id.trashButton);
 
@@ -58,6 +99,15 @@ public class ComposeActivity extends AppCompatActivity {
                 // Start NewActivity.class
                 Intent saveIntent = new Intent(ComposeActivity.this,
                         MainActivity.class);
+                String body =((EditText)findViewById(R.id.bodyCompose)).getText().toString();
+                Log.i("DEBUG",body);
+               // byte[] binCpk = body.getBytes();
+               // String base64 = Base64.encodeToString(binCpk, Base64.DEFAULT);
+                String encrypt = encryptToBase64(body);
+                Log.i("BASE64",body);
+                Log.i("hello",encryptToBase64(body));
+                Toast.makeText(getApplicationContext(), "Message Encrypted " +encrypt , Toast.LENGTH_LONG).show();
+
                 startActivity(saveIntent);
             }
         });
@@ -95,6 +145,45 @@ public class ComposeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    public String encryptToBase64(String clearText){
+        try {
+            Log.i("DEBUG","clear text is of length "+clearText.getBytes().length);
+            Cipher rsaCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding","SC");
+            String username = to_text.getText().toString();
+            ContactDBHelper condb = new ContactDBHelper(this);
+            Contact con = condb.getContact(username);
+            String publickey = con.getPublickey();
+            Log.i("keyyyyyyy",publickey);
+            byte[] binCpk = org.spongycastle.util.encoders.Base64.decode(publickey);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(binCpk);
+            pKey = keyFactory.generatePublic(publicKeySpec);
+            Log.i("pKey",pKey.toString());
+            rsaCipher.init(Cipher.ENCRYPT_MODE,pKey);
+            Log.i("Done", "I am done");
+            byte[] bytes = rsaCipher.doFinal(clearText.getBytes());
+            Log.d("DEBUG","cipher bytes is of length "+bytes.length);
+            Log.i("bytes", Arrays.toString(bytes));
+
+            return Base64.encodeToString(bytes,Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }  catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
 }

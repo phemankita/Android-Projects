@@ -32,6 +32,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
+
+
+        /*try {
             SecureRandom random = new SecureRandom();
             RSAKeyGenParameterSpec spec = new RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4);
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA","SC");
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
        /* String init = "";
         for(int i=0;i<85;i++){
@@ -110,16 +113,42 @@ public class MainActivity extends AppCompatActivity {
         encryptToBase64(init);*/
         //((EditText)findViewById(R.id.keyPair)).setText(init);
 
+        MessageDBHelper msgdb = new MessageDBHelper(this);
+        //msgdb.clean(this);
+        //msgdb.insertMessages();
+        ArrayList<Contact> conArray = new ArrayList<>();
+        /**
+         * CRUD Operations
+         * */
+        // Inserting Contacts
+        Log.i("Insert: ", "Inserting ..");
+        //condb.addContact(new Contact("Ravi", "img1" , "publickey"));
+        //condb.addContact(new Contact("Srinivas", "img2","publickey"));
 
+        // Reading all contacts
+        Log.d("Reading: ", "Reading all messages..");
 
-        msgArray.add(new Message("Message1 | Subject1",5));
-        msgArray.add(new Message("Message2 | Subject2",60));
-        msgArray.add(new Message("Message3 | Subject3",15));
+        List<Message> messages = msgdb.getAllMessages();
+
+        for (Message m : messages) {
+            String log = "Id: "+m.getSenderName()+" ,Name: " + m.getSubjectLine();
+            // Writing Contacts to log
+            Log.d("Message: ", log);
+        }
+
+        for (Message m : messages) {
+            msgArray.add(m);
+        }
+
+        //msgArray.add(new Message("Message1 | Subject1",5));
+        //msgArray.add(new Message("Message2 | Subject2",60));
+        //msgArray.add(new Message("Message3 | Subject3",15));
         //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_contactlistview, mobileArray);
        MessageListAdapter adapter=new MessageListAdapter(MainActivity.this,R.layout.activity_listview,msgArray);
 
         ListView listView = (ListView) findViewById(R.id.message_list);
         listView.setAdapter(adapter);
+
 
 
 
@@ -164,6 +193,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    /*public void onRestart(){
+        super.onRestart();
+        //super.onRestart();
+
+    }*/
+
     private String encryptToBase64(String clearText){
         try {
             Log.d(DEBUG,"clear text is of length "+clearText.getBytes().length);
@@ -189,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return "";
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -210,8 +247,26 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
     public void readMessage(View view){
-        Intent intent = new Intent(MainActivity.this, ReadActivity.class);
-        startActivity(intent);
+        MessageDBHelper msgdb = new MessageDBHelper(this);
+        View parentRow = (View) view.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        //Log.i("UI","number"+position);
+        List<Message> messages = msgdb.getAllMessages();
+        Message msg=messages.get(position);
+        //Log.i("UI","number"+con.getContact());
+        String senderName = msg.getSenderName();
+        String subjectLine = msg.getSubjectLine();
+        String message = msg.getMessage();
+        long time_to_live = msg.getTimeToLive_ms();
+        Intent rintent = new Intent(MainActivity.this, ReadActivity.class);
+        rintent.putExtra("SNAME",senderName);
+        rintent.putExtra("TTL",time_to_live);
+        rintent.putExtra("SUBJECT",subjectLine);
+        rintent.putExtra("BODY",message);
+        startActivity(rintent);
     }
 }

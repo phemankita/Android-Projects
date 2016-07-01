@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/bodyCompose"
         android:layout_weight="0.70"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -82,7 +82,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:text="Save"
+            android:text="Send"
             android:id="@+id/saveComposeButton"
             android:layout_gravity="bottom"/>
         <View

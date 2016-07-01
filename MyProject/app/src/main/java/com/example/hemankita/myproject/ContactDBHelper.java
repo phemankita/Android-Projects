@@ -42,8 +42,8 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-                + KEY_USERNAME + " INTEGER ," + KEY_IMAGE + " BLOB ,"
-                + KEY_PUBLICKEY + " TEXT" + ")";
+                + KEY_USERNAME + " ," + KEY_IMAGE + " ,"
+                + KEY_PUBLICKEY + " " + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -76,12 +76,12 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     }
 
     // Getting single contact
-    Contact getContact(int id) {
+    Contact getContact(String userName) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CONTACTS, new String[] { KEY_USERNAME,
                         KEY_IMAGE, KEY_PUBLICKEY }, KEY_USERNAME + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+                new String[] { userName }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
