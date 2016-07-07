@@ -57,7 +57,7 @@ public class ReadActivity extends AppCompatActivity {
                         msg_body.getText().toString(),
                         Long.valueOf(time_to_live.getText().toString()));
                 msgdb.deleteMessage(msg);
-
+                msgdb.close();
                 //Toast.makeText(getApplicationContext(), "Saving a contact to the DB " + result, Toast.LENGTH_LONG).show();
                 finish();
                 startActivity(trashreadIntent);

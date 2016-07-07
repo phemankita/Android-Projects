@@ -29,7 +29,7 @@ public class MessageListAdapter extends ArrayAdapter<Message> {
     private List<ViewHolder> lstHolders;
     private Handler mHandler = new Handler();
     private ArrayList<String> msglist = new ArrayList<>();
-    MessageDBHelper m = new MessageDBHelper(getContext());
+
     private Runnable updateRemainingTimeRunnable = new Runnable() {
         @Override
         public void run() {
@@ -91,7 +91,7 @@ public class MessageListAdapter extends ArrayAdapter<Message> {
             holder.message_name = (TextView) convertView.findViewById(R.id.message_name);
             holder.time_to_live = (TextView) convertView.findViewById(R.id.ttl);
             Log.i("holder text",holder.time_to_live.getText().toString());
-           /* if(holder.time_to_live.getText().toString().equals("Expired!!")){
+            /*if(holder.time_to_live.getText().toString().equals("Expired!!")){
                 MessageDBHelper msgdata = new MessageDBHelper(convertView.getContext());
                 String name = holder.message_name.getText().toString();
                 msgdata.deleteMessage(msgdata.getMessage(name));
@@ -137,22 +137,17 @@ public class MessageListAdapter extends ArrayAdapter<Message> {
             //Log.i("Time difference",Long.valueOf(timeDiff).toString());
             if (timeDiff > 0) {
                 int seconds = (int) (timeDiff / 1000) % 60;
-                Log.i("TTL",Integer.valueOf(seconds).toString());
+                //Log.i("TTL",Integer.valueOf(seconds).toString());
                 int minutes = (int) ((timeDiff / (1000 * 60)) % 60);
                 int hours = (int) ((timeDiff / (1000 * 60 * 60)) % 24);
                 time_to_live.setText(hours + " hrs " + minutes + " mins " + seconds + " sec");
             } else {
                 time_to_live.setText("Expired!!");
-
-                //MessageDBHelper msgda = new MessageDBHelper(getContext());
-                //msglist = msgda.getExpiryMessages(msg.getTimeToLive_ms());
-                //Log.i("f",msglist.get(0).toString());
-
-
-                /*if(!msglist.contains(msg.getSenderName())){
-                    msglist.add(msg.getSenderName());
-                }*/
-
+                //Log.i("expired","done");
+                MessageDBHelper m = MessageDBHelper.getInstance(getContext());
+                m.deleteMessage(msg);
+                //Log.i("jj","deleted");
+                notifyDataSetChanged();
 
             }
 

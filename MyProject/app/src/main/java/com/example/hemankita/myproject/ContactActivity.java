@@ -203,9 +203,14 @@ public class ContactActivity extends AppCompatActivity {
                 Contact con=new Contact(person_name.getText().toString(),
                         public_key.getText().toString(),
                         imageData.toString());
-                condb.deleteContact(con);
 
-                //Toast.makeText(getApplicationContext(), "Saving a contact to the DB " + result, Toast.LENGTH_LONG).show();
+                    condb.deleteContact(con);
+
+                /*else{
+                    Toast.makeText(getApplicationContext(), "Contact is empty ", Toast.LENGTH_LONG).show();
+                }*/
+                condb.close();
+
                 finish();
                 startActivity(deleteIntent);
             }

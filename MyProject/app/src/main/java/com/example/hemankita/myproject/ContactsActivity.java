@@ -129,6 +129,7 @@ public class ContactsActivity extends AppCompatActivity {
         String name = con.getContact();
         String image = con.getImage();
         String publickey = con.getPublickey();
+        condb.close();
         Log.i("PPPPPP",publickey);
         Intent sintent = new Intent(ContactsActivity.this, ContactActivity.class);
         sintent.putExtra("UNAME",name);

@@ -16,7 +16,7 @@ public class MessageDBHelper extends SQLiteOpenHelper {
     // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 1;
-
+    private static MessageDBHelper sInstance;
     // Database Name
     private static final String DATABASE_NAME = "messageManager";
 
@@ -28,15 +28,26 @@ public class MessageDBHelper extends SQLiteOpenHelper {
     private static final String KEY_SUBJECT = "subjectLine";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_TTL = "timeToLive_ms";
+    static long time;
+    //private Context mcxt;
 
+    public static synchronized MessageDBHelper getInstance(Context context) {
 
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+
+            sInstance = new MessageDBHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
     public MessageDBHelper(Context context) {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        insertMessages();
+        //this.mcxt = context;
+
         //clean(context);
-
-
 
     }
     public void clean(Context context){
@@ -47,10 +58,14 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 
     public void insertMessages()
     {
+        time=System.currentTimeMillis();
+        addMessage(new Message("Mouli","Hello !!!","How are you",System.currentTimeMillis()+5000));
+        addMessage(new Message("Hems","See you","Coming to see you",System.currentTimeMillis()+15000));
+        addMessage(new Message("Tinnu","HI :)","Where are you now",System.currentTimeMillis()+300000));
 
-        addMessage(new Message("Mouli","Hello !!!","How are you",System.currentTimeMillis()+50000));
-        addMessage(new Message("Tinnu","See you","Coming to see you",System.currentTimeMillis()+15000));
-        addMessage(new Message("Vamsi","HI :)","Where are you now",System.currentTimeMillis()+300000));
+    }
+    public long timing(){
+        return time;
     }
     // Creating Tables
     @Override
@@ -59,6 +74,17 @@ public class MessageDBHelper extends SQLiteOpenHelper {
                 + KEY_SENDER + " TEXT ," + KEY_SUBJECT + " TEXT ,"
                 + KEY_MESSAGE + " TEXT ," + KEY_TTL + " INTEGER" + ")";
         db.execSQL(CREATE_MESSAGES_TABLE);
+        //db.execSQL("insert into " + TABLE_MESSAGES + "(" + KEY_SENDER + "," + KEY_SUBJECT + "," + KEY_MESSAGE + "," + KEY_TTL + ") values('Hema','Hello','How are you',System.currentTimeMillis()+50000)");
+        //ContentValues[] values = new ContentValues[3];
+       /* for(int i=1;i<=3;i++){
+            values[i-1].put(KEY_SENDER, "Raji");
+            values[i-1].put(KEY_NAME, "name"+i); // Contact Name
+            values[i-1].put(KEY_PH_NO, "ph"+1);// Contact Phone
+            values[i-1].put(KEY_EMAIL_ID, "id"+i);
+            db.insert(TABLE_EMERGENCY_CONTACTS, null, values[i-1]);
+
+        }*/
+
     }
 
     // Upgrading database
@@ -69,13 +95,14 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
-        //http://www.androidhive.info/2011/11/android-sqlite-database-tutorial/
+
     }
     /**
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
     // Adding new contact
+
     void addMessage(Message message) {
         SQLiteDatabase db = this.getWritableDatabase();
 

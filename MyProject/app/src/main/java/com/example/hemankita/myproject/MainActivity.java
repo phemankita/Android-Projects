@@ -1,9 +1,13 @@
 package com.example.hemankita.myproject;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -11,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,85 +43,46 @@ public class MainActivity extends AppCompatActivity {
 
     private static String DEBUG = "PUBLIC/PRIVATE KEY";
     public static final String MyPREFERENCES = "MyPreferences" ;
+    public static final String prefs = "PreferencesName" ;
+    public static final String PREF_FIRST1 = "BooleanName";
     public static final String PUBLICKEY = "PublicKey";
     public static final String PRIVATEKEY = "PrivateKey";
     SharedPreferences sharedpreferences;
+    Handler handler ;
+    Runnable refresh;
 
     KeyPair keyPair;
-
+    List<Message> messages;
+    MessageListAdapter adapter;
+    ArrayList<Message> msgArray;
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
     ImageButton settings_button,contact_button,compose_button;
-    ArrayList<Message> msgArray = new ArrayList<Message>();
-
+    ListView listView;
+    String publickey,privatekey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.handler = new Handler();
 
+        this.handler.postDelayed(m_Runnable,3000);
 
-        /*try {
-            SecureRandom random = new SecureRandom();
-            RSAKeyGenParameterSpec spec = new RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4);
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA","SC");
-            generator.initialize(spec,random);
+        MessageDBHelper msgdb = MessageDBHelper.getInstance(this);
+        //if(msgdb == null){
+           // msgdb.insertMessages();
+        //}
 
-            keyPair = generator.generateKeyPair();
+       //if (!prefs.getBoolean("firstTime", false)) {
 
-            Log.i(DEBUG,"GOT KEY!");
+           // SharedPreferences.Editor editor = prefs.edit();
+           // editor.putBoolean("firstTime", true);
+           // editor.commit();
+       // }
 
-            StringWriter writer = new StringWriter();
-            PemWriter pemWriter = new PemWriter(writer);
-            pemWriter.writeObject(new PemObject("PUBLIC KEY",keyPair.getPublic().getEncoded()));
-            pemWriter.flush();
-            pemWriter.close();
-            Log.i("Public",keyPair.getPrivate().toString());
-            Log.i("Private",keyPair.getPublic().toString());
-            sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-            String public_key=keyPair.getPublic().toString();
-            String private_key=keyPair.getPrivate().toString();
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putString(PUBLICKEY, public_key);
-            editor.putString(PRIVATEKEY, private_key);
-            editor.commit();
-            //Toast.makeText(MainActivity.this,"Thanks", Toast.LENGTH_LONG).show();
-            //assert ((TextView)findViewById(R.id.keyPair)) != null;
-            //((TextView)findViewById(R.id.publickeyfield)).setText(writer.toString());
-
-
-            //writer = new StringWriter();
-            //pemWriter = new PemWriter(writer);
-            //pemWriter.writeObject(new PemObject("PRIVATE KEY",myKeyPair.getPrivate().getEncoded()));
-            //pemWriter.flush();
-            //pemWriter.close();
-            //((TextView)findViewById(R.id.private_key_field)).setText(writer.toString());
-        }
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        }
-        catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-       /* String init = "";
-        for(int i=0;i<85;i++){
-            init += "a";
-        }
-        Log.d(DEBUG,init);
-        encryptToBase64(init);*/
-        //((EditText)findViewById(R.id.keyPair)).setText(init);
-
-        MessageDBHelper msgdb = new MessageDBHelper(this);
         //msgdb.clean(this);
         //msgdb.insertMessages();
-        ArrayList<Contact> conArray = new ArrayList<>();
         /**
          * CRUD Operations
          * */
@@ -127,15 +93,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Reading all contacts
         Log.d("Reading: ", "Reading all messages..");
+        //msgdb.insertMessages();
+        //Message mh = new Message("Hi","Hello","How are you",System.currentTimeMillis()+50000);
+        //msgdb.addMessage(mh);
 
-        List<Message> messages = msgdb.getAllMessages();
 
+        messages = msgdb.getAllMessages();
+        //finish();
         for (Message m : messages) {
             String log = "Id: "+m.getSenderName()+" ,Name: " + m.getSubjectLine();
             // Writing Contacts to log
             Log.d("Message: ", log);
         }
-
+        msgArray = new ArrayList<Message>();
         for (Message m : messages) {
             msgArray.add(m);
         }
@@ -144,12 +114,16 @@ public class MainActivity extends AppCompatActivity {
         //msgArray.add(new Message("Message2 | Subject2",60));
         //msgArray.add(new Message("Message3 | Subject3",15));
         //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_contactlistview, mobileArray);
-       MessageListAdapter adapter=new MessageListAdapter(MainActivity.this,R.layout.activity_listview,msgArray);
+        adapter=new MessageListAdapter(MainActivity.this,R.layout.activity_listview,msgArray);
 
-        ListView listView = (ListView) findViewById(R.id.message_list);
-        listView.setAdapter(adapter);
+         listView = (ListView) findViewById(R.id.message_list);
+                listView.setAdapter(adapter);
 
 
+
+
+
+        msgdb.close();
 
 
         // Locate the button in activity_main.xml
@@ -194,11 +168,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*public void onRestart(){
-        super.onRestart();
-        //super.onRestart();
+    private final Runnable m_Runnable = new Runnable()
+    {
+        public void run()
 
-    }*/
+        {
+           // Toast.makeText(MainActivity.this,"in runnable",Toast.LENGTH_SHORT).show();
+            messages.clear();
+            MessageDBHelper d =MessageDBHelper.getInstance(getApplicationContext());
+            messages = d.getAllMessages();
+            msgArray.clear();
+            for (Message m : messages) {
+                msgArray.add(m);
+            }
+            ((ArrayAdapter<Message>) listView.getAdapter()).notifyDataSetChanged();
+            //onRestart();
+            adapter.notifyDataSetChanged();
+            MainActivity.this.handler.postDelayed(m_Runnable, 3000);
+        }
+
+    };
+
+
+
 
     private String encryptToBase64(String clearText){
         try {
@@ -250,7 +242,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void readMessage(View view){
-        MessageDBHelper msgdb = new MessageDBHelper(this);
+        MessageDBHelper msgdb = MessageDBHelper.getInstance(this);
+        long time = msgdb.timing();
         View parentRow = (View) view.getParent();
         ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
@@ -261,10 +254,13 @@ public class MainActivity extends AppCompatActivity {
         String senderName = msg.getSenderName();
         String subjectLine = msg.getSubjectLine();
         String message = msg.getMessage();
-        long time_to_live = msg.getTimeToLive_ms();
+
+        long time_to_live = msg.getTimeToLive_ms()-time;
+        long seconds =  (time_to_live / 1000);
+        Log.i("time",Long.valueOf(time).toString());
         Intent rintent = new Intent(MainActivity.this, ReadActivity.class);
         rintent.putExtra("SNAME",senderName);
-        rintent.putExtra("TTL",time_to_live);
+        rintent.putExtra("TTL",seconds);
         rintent.putExtra("SUBJECT",subjectLine);
         rintent.putExtra("BODY",message);
         startActivity(rintent);
