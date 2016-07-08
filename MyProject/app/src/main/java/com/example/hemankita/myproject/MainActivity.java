@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.handler = new Handler();
 
-        this.handler.postDelayed(m_Runnable,3000);
+        this.handler.postDelayed(m_Runnable,1000);
 
         MessageDBHelper msgdb = MessageDBHelper.getInstance(this);
         //if(msgdb == null){
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             ((ArrayAdapter<Message>) listView.getAdapter()).notifyDataSetChanged();
             //onRestart();
             adapter.notifyDataSetChanged();
-            MainActivity.this.handler.postDelayed(m_Runnable, 3000);
+            MainActivity.this.handler.postDelayed(m_Runnable, 1000);
         }
 
     };
