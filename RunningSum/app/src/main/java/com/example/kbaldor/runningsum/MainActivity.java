@@ -18,6 +18,7 @@ import nz.sodium.Cell;
 import nz.sodium.CellLoop;
 import nz.sodium.CellSink;
 import nz.sodium.Handler;
+import nz.sodium.Lambda1;
 import nz.sodium.Lambda2;
 import nz.sodium.Lambda3;
 import nz.sodium.Stream;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button MinusButton = (Button)findViewById(R.id.minus);
         Button PlusButton  = (Button)findViewById(R.id.plus);
-        Button SendButton  = (Button)findViewById(R.id.send);
+
         final TextView valueView = (TextView)findViewById(R.id.N);
         final TextView values = (TextView)findViewById(R.id.LastNumbers);
         final TextView sumValue = (TextView)findViewById(R.id.Sum);
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 // define your reactive network here
                 N = new CellLoop<>();
                 lastNValues = new CellLoop<>();
-                sum = new CellLoop<>();
+
                 Stream<Integer> incrementValues = incrementEvent.snapshot(N, new Lambda2<Unit, Integer, Integer>() {
                     @Override
                     public Integer apply(Unit unit, Integer old_value) {
@@ -148,21 +149,18 @@ public class MainActivity extends AppCompatActivity {
                 lastNValues.loop(legalList);
 
 
-                sum = legalList.lift(lastNValues, new Lambda2<ArrayList<Integer>, ArrayList<Integer>, Integer>() {
+                sum= legalList.map(new Lambda1<ArrayList<Integer>, Integer>() {
                     @Override
-                    public Integer apply(ArrayList<Integer> integers, ArrayList<Integer> integers2) {
-                        int size = integers2.size();
+                    public Integer apply(ArrayList<Integer> integers) {
+                        int size = integers.size();
                         int sumVal=0;
                         for(int i=0;i<size;i++)
                         {
-                           sumVal=sumVal+integers2.get(i);
+                            sumVal=sumVal+integers.get(i);
                         }
                         return sumVal;
                     }
                 });
-
-
-
 
 
             }
