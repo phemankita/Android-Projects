@@ -47,6 +47,9 @@ public class MyApp extends Application {
         MessageDBHelper msgdb = new MessageDBHelper(this);
         msgdb.insertMessages();
         msgdb.close();
+        ContactDBHelper condb = new ContactDBHelper(this);
+        condb.insertContacts();
+        condb.close();
         sharedpreferences = this.getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
         if(sharedpreferences.getBoolean("keyv",true)) {
             try {

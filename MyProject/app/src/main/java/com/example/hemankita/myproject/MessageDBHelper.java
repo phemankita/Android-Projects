@@ -58,11 +58,18 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 
     public void insertMessages()
     {
+        List<Message> msg = getAllMessages();
+        if(!msg.isEmpty()){
+            for(int i=0;i<msg.size();i++)
+            {
+                Message m = msg.get(i);
+                deleteMessage(m);
+            }
+        }
         time=System.currentTimeMillis();
         addMessage(new Message("Mouli","Hello !!!","How are you",System.currentTimeMillis()+5000));
         addMessage(new Message("Hems","See you","Coming to see you",System.currentTimeMillis()+15000));
         addMessage(new Message("Tinnu","HI :)","Where are you now",System.currentTimeMillis()+300000));
-
     }
     public long timing(){
         return time;

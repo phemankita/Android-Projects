@@ -56,7 +56,7 @@ public class ContactsActivity extends AppCompatActivity {
        List<Contact> contacts = condb.getAllContacts();
 
        for (Contact cn : contacts) {
-            String log = "Id: "+cn.getContact()+" ,Name: " + cn.getImage() + " ,Phone: " + cn.getPublickey();
+            String log = "Id: "+cn.getContact()+" ,Image: "+"\n" + cn.getImage()+"\n" + " Publickey: " + cn.getPublickey();
             // Writing Contacts to log
             Log.d("Name: ", log);
         }

@@ -60,6 +60,21 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     /**
      * All CRUD(Create, Read, Update, Delete) Operations
      */
+    public void insertContacts()
+    {
+        List<Contact> con = getAllContacts();
+        if(!con.isEmpty()){
+            for(int i=0;i<con.size();i++)
+            {
+                Contact m = con.get(i);
+                deleteContact(m);
+            }
+        }
+        addContact(new Contact("Eswar","[B@c191089","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChOCVZ78gM2uhNyIzU2AgLq9vFSwOLN3UOObULUG2jZavo1pxrc7iKFXiSFPe2J++A6bs9CDSQw0Ud2V2DTuJT3i+laW4Ko+0dyigA/Y8lzlnS1ksClttGBo7UclCmhhPMJiPOYsQOztrmFj393CyR1UT8AUh/10Y92mwIJ7kF3wIDAQAB"));
+        addContact(new Contact("Tinnu","[B@19822be","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKq+CiJStmZz4swHfzJe2boZe/9JJ0KHjxbUX7AVvteAXl3tXFU2WHkesB2zMqTbPbcMhZA69rmktOUKxwiYGem2LdVzXmMOoDgmageCkCjfd38ScZWENk7yL9m4UUlQwjhV0XQ+A1WYD3/QBKIlmJVlevO+c4h5RpXRWmu1beeQIDAQAB"));
+        addContact(new Contact("Hems","[B@c267943","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkJDWPwcO/6gaTF1XEX8mrnwdD//T+mnEYhecVK7UuIl8teefDAZ9hLkvqsSMpt8LIyAt6zTo4JuoOXQijKZj0TqiX1psD+xK/ygVTCHT5+oMfdqbVvZvaSbbqFnmY2rns629EP1V9cbjRpFVnqFcyhXY5IfqZRDEKCfex5pdqzwIDAQAB"));
+        addContact(new Contact("Mouli","[B@4d82d12","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgqsJryE0IX4AL6/Z+1Ii2oz/3k/hH7mR0jndmLH4hT7gZIheaUG+mnzNR0umH/Psa1zFIAMv31SI16yeX9VEtVUGq//uryMlobVKo0jrXivXVc+/nRh0LBNOaulL6qF38hWH1HY4yXyTbe5c0eI0YC3WZOyNmJlT0zr6MGmGN1wIDAQAB"));
+    }
 
     // Adding new contact
     void addContact(Contact contact) {
