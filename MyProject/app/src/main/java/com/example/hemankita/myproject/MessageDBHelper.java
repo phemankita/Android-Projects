@@ -24,18 +24,21 @@ public class MessageDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_MESSAGES = "messages";
 
     // Contacts Table Columns names
+    private static final String KEY_ID = "id";
     private static final String KEY_SENDER = "senderName";
     private static final String KEY_SUBJECT = "subjectLine";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_TTL = "timeToLive_ms";
     static long time;
     //private Context mcxt;
+    public static final String CREATE_MESSAGES_TABLE = "CREATE TABLE " + TABLE_MESSAGES + "(" + KEY_ID + " INTEGER ,"
+            + KEY_SENDER + " TEXT ," + KEY_SUBJECT + " TEXT ,"
+            + KEY_MESSAGE + " TEXT ," + KEY_TTL + " INTEGER" + ")";
 
     public static synchronized MessageDBHelper getInstance(Context context) {
 
         // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
+
         if (sInstance == null) {
 
             sInstance = new MessageDBHelper(context.getApplicationContext());
@@ -47,7 +50,7 @@ public class MessageDBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //this.mcxt = context;
 
-        //clean(context);
+       // clean(context);
 
     }
     public void clean(Context context){
@@ -67,19 +70,19 @@ public class MessageDBHelper extends SQLiteOpenHelper {
             }
         }
         time=System.currentTimeMillis();
-        addMessage(new Message("Mouli","Hello !!!","How are you",System.currentTimeMillis()+5000));
-        addMessage(new Message("Hems","See you","Coming to see you",System.currentTimeMillis()+15000));
-        addMessage(new Message("Tinnu","HI :)","Where are you now",System.currentTimeMillis()+300000));
+        addMessage(new Message(MainActivity.counter++,"Mouli","Hello !!!","How are you",System.currentTimeMillis()+5000));
+        addMessage(new Message(MainActivity.counter++,"Hems","See you","Coming to see you",System.currentTimeMillis()+15000));
+        addMessage(new Message(MainActivity.counter++,"Tinnu","HI :)","Where are you now",System.currentTimeMillis()+300000));
     }
     public long timing(){
         return time;
     }
     // Creating Tables
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        String CREATE_MESSAGES_TABLE = "CREATE TABLE " + TABLE_MESSAGES + "("
-                + KEY_SENDER + " TEXT ," + KEY_SUBJECT + " TEXT ,"
-                + KEY_MESSAGE + " TEXT ," + KEY_TTL + " INTEGER" + ")";
+    public void onCreate(SQLiteDatabase db)
+    {
+       // db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+
         db.execSQL(CREATE_MESSAGES_TABLE);
         //db.execSQL("insert into " + TABLE_MESSAGES + "(" + KEY_SENDER + "," + KEY_SUBJECT + "," + KEY_MESSAGE + "," + KEY_TTL + ") values('Hema','Hello','How are you',System.currentTimeMillis()+50000)");
         //ContentValues[] values = new ContentValues[3];
@@ -114,6 +117,7 @@ public class MessageDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_ID, message.getId());
         values.put(KEY_SENDER, message.getSenderName()); // Sender Name
         values.put(KEY_SUBJECT, message.getSubjectLine());// Subject
         values.put(KEY_MESSAGE,message.getMessage()); //message body
@@ -128,13 +132,13 @@ public class MessageDBHelper extends SQLiteOpenHelper {
     Message getMessage(String senderName) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_MESSAGES, new String[] { KEY_SENDER,
+        Cursor cursor = db.query(TABLE_MESSAGES, new String[] { KEY_ID, KEY_SENDER,
                         KEY_SUBJECT, KEY_MESSAGE, KEY_TTL }, KEY_SENDER + "=?",
                 new String[] { senderName }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Message message = new Message(cursor.getString(0), cursor.getString(1), cursor.getString(2),cursor.getLong(3));
+        Message message = new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getLong(4));
 
         return message;
     }
@@ -152,10 +156,11 @@ public class MessageDBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Message message = new Message();
-                message.setSenderName(cursor.getString(0));
-                message.setSubjectLine(cursor.getString(1));
-                message.setMessage(cursor.getString(2));
-                message.setTimeToLive_ms(cursor.getLong(3));
+                message.setId(cursor.getInt(0));
+                message.setSenderName(cursor.getString(1));
+                message.setSubjectLine(cursor.getString(2));
+                message.setMessage(cursor.getString(3));
+                message.setTimeToLive_ms(cursor.getLong(4));
                 // Adding messages to list
                 messageList.add(message);
             } while (cursor.moveToNext());
@@ -182,9 +187,12 @@ public class MessageDBHelper extends SQLiteOpenHelper {
 
     // Deleting single message
     public void deleteMessage(Message message) {
+        //db.delete(TABLE_MESSAGES, KEY_SENDER + " = ?",
+               // new String[] { message.getSenderName() });
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MESSAGES, KEY_SENDER + " = ?",
-                new String[] { message.getSenderName() });
+        String query=" DELETE FROM " + TABLE_MESSAGES+
+                " WHERE "+KEY_ID+ " =  '" + message.getId()+"'";
+        db.execSQL(query);
         db.close();
     }
 

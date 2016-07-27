@@ -52,10 +52,11 @@ public class ReadActivity extends AppCompatActivity {
                         MainActivity.class);
                 MessageDBHelper msgdb = new MessageDBHelper(getApplicationContext());
                 SQLiteDatabase db = msgdb.getWritableDatabase();
-                Message msg=new Message(sender_name.getText().toString(),
+               /* Message msg=new Message(sender_name.getText().toString(),
                         subject_line.getText().toString(),
                         msg_body.getText().toString(),
-                        Long.valueOf(time_to_live.getText().toString()));
+                        Long.valueOf(time_to_live.getText().toString()));*/
+                Message msg = msgdb.getMessage(sender_name.getText().toString());
                 msgdb.deleteMessage(msg);
                 msgdb.close();
                 //Toast.makeText(getApplicationContext(), "Saving a contact to the DB " + result, Toast.LENGTH_LONG).show();

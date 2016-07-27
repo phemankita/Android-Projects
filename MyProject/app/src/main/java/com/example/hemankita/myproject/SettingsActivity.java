@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         this.handler = new Handler();
 
-        this.handler.postDelayed(m_Runnable,5000);
+        this.handler.postDelayed(m_Runnable,3000);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         String sname = getPreferences(Context.MODE_PRIVATE).getString("ServerName","129.115.27.54");
@@ -207,7 +207,8 @@ public class SettingsActivity extends AppCompatActivity {
             public void onMessageDelivered(String sender, String recipient, String subject, String body, long born_on_date, long time_to_live) {
                 Toast.makeText(SettingsActivity.this,String.format("got message from %s",sender),Toast.LENGTH_SHORT).show();
                 MessageDBHelper msg = new MessageDBHelper(getApplicationContext());
-                msg.addMessage(new Message(sender,subject,body,System.currentTimeMillis()+10000+time_to_live));
+                msg.addMessage(new Message(MainActivity.counter++,sender,subject,body,System.currentTimeMillis()+time_to_live));
+                //System.currentTimeMillis()+(born_on_date/17460000)+time_to_live
                 msg.close();
             }
         });
@@ -244,7 +245,7 @@ public class SettingsActivity extends AppCompatActivity {
                 for(int i=0;i<clist.size();i++){
                     contacts.add(clist.get(i).getContact());
                 }
-
+                contList.close();
                 //contacts.add("alice");
                 //contacts.add("cathy");
                 //contacts.add("mouli");
@@ -300,8 +301,15 @@ public class SettingsActivity extends AppCompatActivity {
         {
             //SettingsActivity.serverAPI.startPushListener("Hemankita");
             if(login) {
+                ContactDBHelper contList = new ContactDBHelper(getApplicationContext());
+                List<Contact> clist = new ArrayList<Contact>();
+                clist=contList.getAllContacts();
+                ArrayList<String> contacts = new ArrayList<>();
+                for(int i=0;i<clist.size();i++){
+                    contacts.add(clist.get(i).getContact());
+                }
+                m=serverAPI.registerContacts(getUserName(), contacts);;
 
-                m=serverAPI.m;
                 if (m != null) {
                     Log.i("Mapped", m.toString());
 
@@ -332,7 +340,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
             }
-            SettingsActivity.this.handler.postDelayed(m_Runnable, 5000);
+            SettingsActivity.this.handler.postDelayed(m_Runnable, 3000);
         }
 
     };

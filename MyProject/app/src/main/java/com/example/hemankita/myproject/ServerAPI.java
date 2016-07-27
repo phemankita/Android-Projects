@@ -492,9 +492,9 @@ public class ServerAPI {
             Log.d(LOG,subject+":");
             Log.d(LOG,body);
             Log.d(LOG,"ttl: "+ttl);
-            Message m = new Message(sender+subject,subject,body,System.currentTimeMillis()+ttl);
+            //Message m = new Message(sender,subject,body,System.currentTimeMillis()+ttl);
 
-            msg.add(m);
+            //msg.add(m);
 
             sendMessageDelivered(sender,recipient,subject,body,born,ttl);
         } catch (Exception e) {

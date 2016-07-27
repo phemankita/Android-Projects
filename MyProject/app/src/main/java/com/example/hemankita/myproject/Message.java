@@ -4,12 +4,14 @@ package com.example.hemankita.myproject;
  * Created by Hemankita on 6/17/2016.
  */
 public class Message {
+    private int id;
     private String senderName;
     private String subjectLine;
     private String message;
     private long bornTime_ms;
     private long timeToLive_ms;
 
+    public int getId() {return id;}
     public String getSenderName() {return senderName;}
     public String getSubjectLine() {return subjectLine;}
     public String getMessage()
@@ -30,6 +32,7 @@ public class Message {
         this.timeToLive_ms=timeToLive_ms;
     }
     public void setBornTime_ms(long bornTime_ms){this.bornTime_ms = bornTime_ms;}
+    public void setId(int id){this.id=id;}
 
 
 
@@ -40,7 +43,8 @@ public class Message {
     }
     public Message(){}
 
-    public Message(String senderName,String subjectLine,String message,long timeToLive_ms){
+    public Message(int id,String senderName,String subjectLine,String message,long timeToLive_ms){
+        this.id=id;
         this.senderName=senderName;
         this.subjectLine=subjectLine;
         this.message=message;

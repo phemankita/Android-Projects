@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREF_FIRST1 = "BooleanName";
     public static final String PUBLICKEY = "PublicKey";
     public static final String PRIVATEKEY = "PrivateKey";
+    public static int counter=0;
     SharedPreferences sharedpreferences;
     Handler handler ;
     Runnable refresh;
