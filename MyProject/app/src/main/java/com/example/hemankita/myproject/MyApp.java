@@ -42,7 +42,7 @@ public class MyApp extends Application {
 
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //if (!prefs.getBoolean("firstTime", false)) {
-            // <---- run your one time code here
+        // <---- run your one time code here
 
         MessageDBHelper msgdb = new MessageDBHelper(this);
         msgdb.insertMessages();
@@ -71,5 +71,4 @@ public class MyApp extends Application {
         }
 
     }
-    }
-
+}

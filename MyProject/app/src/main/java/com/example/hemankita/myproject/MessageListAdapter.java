@@ -112,7 +112,7 @@ public class MessageListAdapter extends ArrayAdapter<Message> {
 
 
     private void setupItem(ViewHolder holder) {
-        holder.message_name.setText(holder.msg.getSenderName()+" | "+holder.msg.getSubjectLine());
+        holder.message_name.setText(holder.msg.getSenderName());
         holder.time_to_live.setText(String.valueOf(holder.msg.getTimeToLive_ms())+"ms");
         //holder.con.setContact(holder.con.getContact());
     }
@@ -124,7 +124,7 @@ public class MessageListAdapter extends ArrayAdapter<Message> {
 
         public void setData(Message item) {
             msg = item;
-            message_name.setText(item.getSenderName()+" | "+item.getSubjectLine());
+            message_name.setText(item.getSenderName());
             updateTimeRemaining(System.currentTimeMillis());
         }
 

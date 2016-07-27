@@ -1,9 +1,15 @@
 package com.example.hemankita.myproject;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,9 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Base64;
 
-
-import org.spongycastle.util.encoders.Base64;
 import org.spongycastle.util.io.pem.PemObject;
 import org.spongycastle.util.io.pem.PemWriter;
 
@@ -41,6 +46,9 @@ import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -54,6 +62,12 @@ public class ContactActivity extends AppCompatActivity {
     public static final String PUBLICKEY = "PublicKey";
     public static final String PRIVATEKEY = "PrivateKey";
     SharedPreferences sharedpreferences;
+    SettingsActivity settings;
+    static String conimage;
+    static PublicKey pkey;
+    Bitmap decByte;
+    String pk;
+    ArrayList<String> cons = new ArrayList<>();
 
     KeyPair keyPair;
 
@@ -136,6 +150,7 @@ public class ContactActivity extends AppCompatActivity {
         Log.d("AddNewRecord", "Size: " + publickey);
         Log.d("AddNewRecord", "Size: " + privatekey);*/
         person_name = (EditText) findViewById(R.id.personName);
+
         save_button = (Button) findViewById(R.id.saveButton);
 
        Intent intent = getIntent();
@@ -147,7 +162,7 @@ public class ContactActivity extends AppCompatActivity {
             person_name.setText(cname);
             public_key = (TextView) findViewById(R.id.publickeyfield);
             try {
-                byte[] binCpk = Base64.decode(cpubkey);
+                byte[] binCpk = org.spongycastle.util.encoders.Base64.decode(cpubkey);
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(binCpk);
                 pKey = keyFactory.generatePublic(publicKeySpec);
@@ -176,16 +191,88 @@ public class ContactActivity extends AppCompatActivity {
         search_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 String userName = person_name.getText().toString();
+                Log.i("Personnameeee",userName);
+                public_key = (TextView) findViewById(R.id.publickeyfield);
+                contact_image = (ImageView) findViewById(R.id.contactImage);
+               // settings.serverAPI.getUserInfo(userName);
+
+
+
+                Log.i("hghfdsfghjk",settings.serverAPI.umap.toString());
+
                 if (TextUtils.isEmpty(userName)) {
                     person_name.setError("Please enter the name of the person");
-                } else {
-                    public_key = (TextView) findViewById(R.id.publickeyfield);
-                    public_key.setText(publickey);
-                    contact_image = (ImageView) findViewById(R.id.contactImage);
-
-                    contact_image.setImageResource(R.drawable.contact);
                 }
+                else if (SettingsActivity.login) {
+
+                    SettingsActivity.serverAPI.getUserInfo(userName);
+                    ServerAPI.UserInfo userinfo = SettingsActivity.myUserMap.get(userName);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                    alertDialogBuilder.setMessage("Please press the search button");
+                    if(userinfo !=null){
+                        conimage = userinfo.image;
+                        Log.i("image",conimage);
+                        pkey = userinfo.publicKey;
+                        Log.i("key",pkey.toString());
+                        byte[] decString = android.util.Base64.decode(conimage, android.util.Base64.DEFAULT);
+                        decByte = BitmapFactory.decodeByteArray(decString, 0, decString.length);
+                        byte[] publicKeyBytes = pkey.getEncoded();
+                        pk = org.spongycastle.util.encoders.Base64.toBase64String(publicKeyBytes);
+
+
+                        public_key.setText(pk);
+
+
+                        contact_image.setImageBitmap(decByte);
+                    }
+
+                   /* Iterator entries = settings.serverAPI.umap.entrySet().iterator();
+                    while (entries.hasNext()) {
+                        Map.Entry entry = (Map.Entry) entries.next();
+                        if (entry.getKey().equals(userName)) {
+                            Log.d("tag", "key  " + entry.getKey().toString() + " value " + entry.getValue().toString());
+                            ServerAPI.UserInfo in = (ServerAPI.UserInfo) entry.getValue();
+
+                            conimage = in.image;
+                            Log.i("image",conimage);
+                            pkey = in.publicKey;
+                            Log.i("key",pkey.toString());
+
+                            // Toast.makeText(Contact.this," "+cname+" is ",Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                        /*else {
+                            Toast.makeText(ContactActivity.this,"This contact is not logged in or he is not in the server list ... Press save if you want to add him as a different user(not the one on server)",Toast.LENGTH_LONG).show();
+                            pkey=keyPair.getPublic();
+                            conimage="[B@c191089";
+
+                        }*/
+
+
+
+
+
+                   /* byte[] decString = android.util.Base64.decode(conimage, android.util.Base64.DEFAULT);
+                    decByte = BitmapFactory.decodeByteArray(decString, 0, decString.length);
+                    byte[] publicKeyBytes = pkey.getEncoded();
+                    pk = org.spongycastle.util.encoders.Base64.toBase64String(publicKeyBytes);
+
+
+                    public_key.setText(pk);
+
+
+                    contact_image.setImageBitmap(decByte);*/
+
+
+                }
+                else{
+                        public_key.setText(publickey);
+                        contact_image.setImageResource(R.drawable.contact);
+                    }
             }
+
         });
 
 
@@ -202,7 +289,7 @@ public class ContactActivity extends AppCompatActivity {
                 SQLiteDatabase db = condb.getWritableDatabase();
                 Contact con=new Contact(person_name.getText().toString(),
                         public_key.getText().toString(),
-                        imageData.toString());
+                        imageData.toString(),"logout");
 
                     condb.deleteContact(con);
 
@@ -224,7 +311,7 @@ public class ContactActivity extends AppCompatActivity {
                 ContactDBHelper condb = new ContactDBHelper(getApplicationContext());
                 SQLiteDatabase db = condb.getWritableDatabase();
                 byte[] pubKey = keyPair.getPublic().getEncoded();
-                String pubKeyString = Base64.toBase64String(pubKey);
+                String pubKeyString = org.spongycastle.util.encoders.Base64.toBase64String(pubKey);
                 Log.i("PK",pubKeyString);
 
                /* Contact con=new Contact(person_name.getText().toString(),
@@ -233,10 +320,13 @@ public class ContactActivity extends AppCompatActivity {
                         );*/
                 Contact con=new Contact(person_name.getText().toString(),
                         imageData.toString(),
-                        pubKeyString
+                        pubKeyString,"logout"
                 );
                 condb.addContact(con);
-
+                if(SettingsActivity.login) {
+                    cons.add(person_name.getText().toString());
+                    SettingsActivity.serverAPI.registerContacts("Hemankita", cons);
+                }
                 //Toast.makeText(getApplicationContext(), "Saving a contact to the DB " + result, Toast.LENGTH_LONG).show();
                 finish();
 

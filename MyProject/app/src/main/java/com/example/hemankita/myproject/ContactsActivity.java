@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -34,14 +36,24 @@ public class ContactsActivity extends AppCompatActivity {
     ImageButton add_button, settings_contact;
     ListView listView;
     static String cn;
+    ContactListAdapter adapter;
+    Handler handler ;
+    List<Contact> contacts;
+    ArrayList<Contact> conArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+
+        this.handler = new Handler();
+
+        this.handler.postDelayed(m_Runnable,1000);
+
         ContactDBHelper condb = new ContactDBHelper(this);
 
-        ArrayList<Contact> conArray = new ArrayList<>();
+       conArray = new ArrayList<>();
         /**
          * CRUD Operations
          * */
@@ -52,8 +64,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         // Reading all contacts
         Log.d("Reading: ", "Reading all contacts..");
-
-       List<Contact> contacts = condb.getAllContacts();
+        contacts = condb.getAllContacts();
 
        for (Contact cn : contacts) {
             String log = "Id: "+cn.getContact()+" ,Image: "+"\n" + cn.getImage()+"\n" + " Publickey: " + cn.getPublickey();
@@ -71,7 +82,7 @@ public class ContactsActivity extends AppCompatActivity {
         conArray.add(new Contact("Contact4","image4","o"));
         conArray.add(new Contact("Contact5","image5","t"));*/
         //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_contactlistview, mobileArray);
-        ContactListAdapter adapter=new ContactListAdapter(ContactsActivity.this,R.layout.activity_contactlistview,conArray);
+         adapter=new ContactListAdapter(ContactsActivity.this,R.layout.activity_contactlistview,conArray);
 
         listView = (ListView) findViewById(R.id.contacts_list);
         listView.setAdapter(adapter);
@@ -102,11 +113,65 @@ public class ContactsActivity extends AppCompatActivity {
 
 
        condb.close();
+
+
+
+        /*Intent intent = getIntent();
+        if(intent.getExtras()!=null){
+        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
+        Log.v("HashMapTest", hashMap.values().toString());
+
+           ContactDBHelper c = new ContactDBHelper(this);
+            List<Contact> cn = condb.getAllContacts();
+            for(int i=0;i<cn.size();i++){
+                Log.i("hellllllllllllll",cn.get(i).getContact());
+                String m = hashMap.get("logged-in");
+                Log.i("hellllllllllllll",m);
+                if(m.contains(cn.get(i).getContact())) {
+                    Log.i("hhhhhhhhhhhhhh", "hurray");
+                    Contact cg = c.getContact(cn.get(i).getContact());
+                    c.updateContact(cg.getContact());
+               }
+            }
+
+            //Log.i("UI","number"+position);
+            /*List<Contact> contacts = condb.getAllContacts();
+            Contact con=contacts.get(position);
+            //Log.i("UI","number"+con.getContact());
+            String name = con.getContact();
+            String image = con.getImage();
+            String publickey = con.getPublickey();
+            condb.close();
+        }*/
+
+    //    muplist=SettingsActivity.serverAPI.startPushListener("Hemankita");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    private final Runnable m_Runnable = new Runnable()
+    {
+        public void run()
+
+        {
+            contacts.clear();
+            ContactDBHelper d = new ContactDBHelper(getApplicationContext());
+            contacts = d.getAllContacts();
+            conArray.clear();
+            for (Contact m : contacts) {
+                conArray.add(m);
+            }
+            ((ArrayAdapter<Message>) listView.getAdapter()).notifyDataSetChanged();
+            //onRestart();
+            adapter.notifyDataSetChanged();
+            ContactsActivity.this.handler.postDelayed(m_Runnable, 1000);
+        }
+
+    };
+
 
     public void settingsContact(View view){
     /*Intent intent = new Intent(ContactsActivity.this, ContactActivity.class);
@@ -129,12 +194,14 @@ public class ContactsActivity extends AppCompatActivity {
         String name = con.getContact();
         String image = con.getImage();
         String publickey = con.getPublickey();
+        String status = con.getStatus();
         condb.close();
         Log.i("PPPPPP",publickey);
         Intent sintent = new Intent(ContactsActivity.this, ContactActivity.class);
         sintent.putExtra("UNAME",name);
         sintent.putExtra("IMAGE",image);
         sintent.putExtra("PUBKEY",publickey);
+        sintent.putExtra("STATUS",status);
         startActivity(sintent);
     }
 

@@ -37,7 +37,7 @@ import javax.crypto.NoSuchPaddingException;
 public class ComposeActivity extends AppCompatActivity {
     ImageButton trash_button,hourglass_button;
     Button save_button;
-    EditText to_text;
+    EditText to_text,to_subject,to_body;
     String cId,cName;
     PublicKey pKey;
 
@@ -47,6 +47,8 @@ public class ComposeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compose);
 
         to_text = (EditText) findViewById(R.id.toText);
+        to_body = ((EditText)findViewById(R.id.bodyCompose));
+        to_subject = ((EditText)findViewById(R.id.subjectText));
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
             cId = intent.getStringExtra("NAME");
@@ -99,14 +101,37 @@ public class ComposeActivity extends AppCompatActivity {
                 // Start NewActivity.class
                 Intent saveIntent = new Intent(ComposeActivity.this,
                         MainActivity.class);
-                String body =((EditText)findViewById(R.id.bodyCompose)).getText().toString();
+                String body =to_body.getText().toString();
                 Log.i("DEBUG",body);
                // byte[] binCpk = body.getBytes();
                // String base64 = Base64.encodeToString(binCpk, Base64.DEFAULT);
                 String encrypt = encryptToBase64(body);
                 Log.i("BASE64",body);
                 Log.i("hello",encryptToBase64(body));
-                Toast.makeText(getApplicationContext(), "Message Encrypted " +encrypt , Toast.LENGTH_LONG).show();
+                String name = to_text.getText().toString();
+                ContactDBHelper con = new ContactDBHelper(getApplicationContext());
+                Contact c = con.getContact(name);
+                con.close();
+                if(c.getStatus().equals("logged-in")){
+                    if(SettingsActivity.myUserMap.containsKey(c.getContact())) {
+                    SettingsActivity.serverAPI.sendMessage(new Object(), // I don't have an object to keep track of, but I need one!
+                            SettingsActivity.myUserMap.get(c.getContact()).publicKey,
+                            "Hemankita",
+                            to_text.getText().toString(),
+                            to_subject.getText().toString(),
+                            to_body.getText().toString(),
+                            System.currentTimeMillis(),
+                            (long) 15000);
+                        Log.i("Message","Sent");
+                } else {
+                    Log.d("Main","User info not available");
+                }
+                    Toast.makeText(getApplicationContext(), "Message Encrypted " +encrypt , Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Message not sent ... USer is offline " , Toast.LENGTH_LONG).show();
+                }
+
 
                 startActivity(saveIntent);
             }

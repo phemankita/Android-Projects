@@ -1,8 +1,6 @@
 package com.example.hemankita.myproject;
 
-import android.annotation.TargetApi;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -35,7 +33,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by Hemankita on 7/17/2016.
+ * Created by Hemankita on 7/23/2016.
  */
 public class Crypto {
     private static String LOG = "Crypto";
@@ -46,7 +44,6 @@ public class Crypto {
 
     KeyPair myRSAKeyPair;
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public Crypto(SharedPreferences preferences){
         String RSAPrivateKey = preferences.getString("RSAPrivateKey","");
         String RSAPublicKey  = preferences.getString("RSAPublicKey","");

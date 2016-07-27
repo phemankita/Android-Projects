@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     KeyPair keyPair;
     List<Message> messages;
     MessageListAdapter adapter;
-    ArrayList<Message> msgArray;
+    ArrayList<Message> msgArray,muplist;
+
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
@@ -71,15 +72,15 @@ public class MainActivity extends AppCompatActivity {
 
         MessageDBHelper msgdb = MessageDBHelper.getInstance(this);
         //if(msgdb == null){
-           // msgdb.insertMessages();
+        // msgdb.insertMessages();
         //}
 
-       //if (!prefs.getBoolean("firstTime", false)) {
+        //if (!prefs.getBoolean("firstTime", false)) {
 
-           // SharedPreferences.Editor editor = prefs.edit();
-           // editor.putBoolean("firstTime", true);
-           // editor.commit();
-       // }
+        // SharedPreferences.Editor editor = prefs.edit();
+        // editor.putBoolean("firstTime", true);
+        // editor.commit();
+        // }
 
         //msgdb.clean(this);
         //msgdb.insertMessages();
@@ -116,16 +117,30 @@ public class MainActivity extends AppCompatActivity {
         //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_contactlistview, mobileArray);
         adapter=new MessageListAdapter(MainActivity.this,R.layout.activity_listview,msgArray);
 
-         listView = (ListView) findViewById(R.id.message_list);
-                listView.setAdapter(adapter);
-
-
-
+        listView = (ListView) findViewById(R.id.message_list);
+        listView.setAdapter(adapter);
 
 
         msgdb.close();
+        Log.i("My value",Boolean.valueOf(SettingsActivity.login).toString());
+       /* if(SettingsActivity.login == true) {
+            ArrayList<Message> msgupd = new ArrayList<>();
+            //msgupd = SettingsActivity.serverAPI.startPushListener("Hemankita");
+            msgupd = SettingsActivity.muplist;
+            if(msgupd!=null)
+            {
+                Log.i("Pushhhhhhhhhhhhh",""+msgupd);
+                MessageDBHelper mupd = new MessageDBHelper(getApplicationContext());
+                for (int i=0;i<msgupd.size();i++){
+                    Log.i("Pushhhhhhhhhhhhh",""+msgupd.get(i).getSenderName());
+                    Message m = msgupd.get(i);
+                    mupd.addMessage(m);
+                }
+                mupd.close();
+            }
 
 
+        }*/
         // Locate the button in activity_main.xml
         settings_button = (ImageButton) findViewById(R.id.settingsButton);
 
@@ -173,7 +188,15 @@ public class MainActivity extends AppCompatActivity {
         public void run()
 
         {
-           // Toast.makeText(MainActivity.this,"in runnable",Toast.LENGTH_SHORT).show();
+
+                   /* muplist = SettingsActivity.serverAPI.msgval;
+                    if (muplist != null) {
+                        MessageDBHelper msg = new MessageDBHelper(getApplicationContext());
+                        for (int i = 0; i < muplist.size(); i++) {
+                            msg.addMessage(muplist.get(i));
+                        }
+                        msg.close();
+                    }*/
             messages.clear();
             MessageDBHelper d =MessageDBHelper.getInstance(getApplicationContext());
             messages = d.getAllMessages();

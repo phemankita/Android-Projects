@@ -28,6 +28,11 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     private static final String KEY_USERNAME = "id";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_PUBLICKEY = "publickey";
+    private static final String STATUS = "status";
+
+    private static final String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
+            + KEY_USERNAME + " ," + KEY_IMAGE + " ,"
+            + KEY_PUBLICKEY + " ," + STATUS + ")";
 
     public ContactDBHelper(Context context) {
 
@@ -41,9 +46,7 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-                + KEY_USERNAME + " ," + KEY_IMAGE + " ,"
-                + KEY_PUBLICKEY + " " + ")";
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -70,10 +73,10 @@ public class ContactDBHelper extends SQLiteOpenHelper {
                 deleteContact(m);
             }
         }
-        addContact(new Contact("Eswar","[B@c191089","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChOCVZ78gM2uhNyIzU2AgLq9vFSwOLN3UOObULUG2jZavo1pxrc7iKFXiSFPe2J++A6bs9CDSQw0Ud2V2DTuJT3i+laW4Ko+0dyigA/Y8lzlnS1ksClttGBo7UclCmhhPMJiPOYsQOztrmFj393CyR1UT8AUh/10Y92mwIJ7kF3wIDAQAB"));
-        addContact(new Contact("Tinnu","[B@19822be","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKq+CiJStmZz4swHfzJe2boZe/9JJ0KHjxbUX7AVvteAXl3tXFU2WHkesB2zMqTbPbcMhZA69rmktOUKxwiYGem2LdVzXmMOoDgmageCkCjfd38ScZWENk7yL9m4UUlQwjhV0XQ+A1WYD3/QBKIlmJVlevO+c4h5RpXRWmu1beeQIDAQAB"));
-        addContact(new Contact("Hems","[B@c267943","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkJDWPwcO/6gaTF1XEX8mrnwdD//T+mnEYhecVK7UuIl8teefDAZ9hLkvqsSMpt8LIyAt6zTo4JuoOXQijKZj0TqiX1psD+xK/ygVTCHT5+oMfdqbVvZvaSbbqFnmY2rns629EP1V9cbjRpFVnqFcyhXY5IfqZRDEKCfex5pdqzwIDAQAB"));
-        addContact(new Contact("Mouli","[B@4d82d12","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgqsJryE0IX4AL6/Z+1Ii2oz/3k/hH7mR0jndmLH4hT7gZIheaUG+mnzNR0umH/Psa1zFIAMv31SI16yeX9VEtVUGq//uryMlobVKo0jrXivXVc+/nRh0LBNOaulL6qF38hWH1HY4yXyTbe5c0eI0YC3WZOyNmJlT0zr6MGmGN1wIDAQAB"));
+        addContact(new Contact("Eswar","[B@c191089","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChOCVZ78gM2uhNyIzU2AgLq9vFSwOLN3UOObULUG2jZavo1pxrc7iKFXiSFPe2J++A6bs9CDSQw0Ud2V2DTuJT3i+laW4Ko+0dyigA/Y8lzlnS1ksClttGBo7UclCmhhPMJiPOYsQOztrmFj393CyR1UT8AUh/10Y92mwIJ7kF3wIDAQAB","logout"));
+        addContact(new Contact("Tinnu","[B@19822be","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKq+CiJStmZz4swHfzJe2boZe/9JJ0KHjxbUX7AVvteAXl3tXFU2WHkesB2zMqTbPbcMhZA69rmktOUKxwiYGem2LdVzXmMOoDgmageCkCjfd38ScZWENk7yL9m4UUlQwjhV0XQ+A1WYD3/QBKIlmJVlevO+c4h5RpXRWmu1beeQIDAQAB","logout"));
+        addContact(new Contact("Hems","[B@c267943","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkJDWPwcO/6gaTF1XEX8mrnwdD//T+mnEYhecVK7UuIl8teefDAZ9hLkvqsSMpt8LIyAt6zTo4JuoOXQijKZj0TqiX1psD+xK/ygVTCHT5+oMfdqbVvZvaSbbqFnmY2rns629EP1V9cbjRpFVnqFcyhXY5IfqZRDEKCfex5pdqzwIDAQAB","logout"));
+        addContact(new Contact("Mouli","[B@4d82d12","MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgqsJryE0IX4AL6/Z+1Ii2oz/3k/hH7mR0jndmLH4hT7gZIheaUG+mnzNR0umH/Psa1zFIAMv31SI16yeX9VEtVUGq//uryMlobVKo0jrXivXVc+/nRh0LBNOaulL6qF38hWH1HY4yXyTbe5c0eI0YC3WZOyNmJlT0zr6MGmGN1wIDAQAB","logout"));
     }
 
     // Adding new contact
@@ -84,7 +87,7 @@ public class ContactDBHelper extends SQLiteOpenHelper {
         values.put(KEY_USERNAME, contact.getContact()); // Contact Name
         values.put(KEY_IMAGE, contact.getImage());// Contact Image
         values.put(KEY_PUBLICKEY,contact.getPublickey()); //Contact Publickey
-
+        values.put(STATUS,"loggedout");
         // Inserting Row
         db.insert(TABLE_CONTACTS, null, values);
         db.close(); // Closing database connection
@@ -95,12 +98,12 @@ public class ContactDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CONTACTS, new String[] { KEY_USERNAME,
-                        KEY_IMAGE, KEY_PUBLICKEY }, KEY_USERNAME + "=?",
+                        KEY_IMAGE, KEY_PUBLICKEY, STATUS }, KEY_USERNAME + "=?",
                 new String[] { userName }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Contact contact = new Contact(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+        Contact contact = new Contact(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
         // return contact
         return contact;
     }
@@ -121,6 +124,7 @@ public class ContactDBHelper extends SQLiteOpenHelper {
                 contact.setContact(cursor.getString(0));
                 contact.setImage(cursor.getString(1));
                 contact.setPublickey(cursor.getString(2));
+                contact.setStatus(cursor.getString(3));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -131,17 +135,13 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     }
 
     // Updating single contact
-    public int updateContact(Contact contact) {
+    public void updateContact(String name,String status) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String query=" UPDATE " + TABLE_CONTACTS+
+                " SET STATUS  = '"+status+"' WHERE "+KEY_USERNAME+ " =  '" + name+"'";
+        db.execSQL(query);
+        db.close();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_USERNAME, contact.getContact());
-        values.put(KEY_IMAGE, contact.getImage());
-        values.put(KEY_PUBLICKEY, contact.getPublickey());
-
-        // updating row
-        return db.update(TABLE_CONTACTS, values, KEY_USERNAME + " = ?",
-                new String[] { String.valueOf(contact.getContact()) });
     }
 
     // Deleting single contact
