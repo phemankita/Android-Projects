@@ -40,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
     ImageView contact_image;
     public static ServerAPI serverAPI;
     public static boolean login= false;
+    public static boolean logout= false;
     Crypto myCrypto;
     public static HashMap<String,ServerAPI.UserInfo> myUserMap = new HashMap<>();
     HashMap<String,String> logStatus = new HashMap<>();
@@ -183,6 +184,11 @@ public class SettingsActivity extends AppCompatActivity {
                 ArrayList<String> loginUsers = new ArrayList<String>();
                 loginUsers.add(username);
                 Log.i("Logged in users list",loginUsers.toString());
+                for(int i=0;i<loginUsers.size();i++){
+                    ContactDBHelper c = new ContactDBHelper(getApplicationContext());
+                    c.updateContact(loginUsers.get(i),"logged-in");
+                    c.close();
+                }
             }
 
             @Override
@@ -191,6 +197,11 @@ public class SettingsActivity extends AppCompatActivity {
                 ArrayList<String> logoutUsers = new ArrayList<String>();
                 logoutUsers.add(username);
                 Log.i("Logged in users list",logoutUsers.toString());
+                for(int i=0;i<logoutUsers.size();i++){
+                    ContactDBHelper c = new ContactDBHelper(getApplicationContext());
+                    c.updateContact(logoutUsers.get(i),"logged-out");
+                    c.close();
+                }
             }
 
             @Override
@@ -251,7 +262,7 @@ public class SettingsActivity extends AppCompatActivity {
                 //contacts.add("mouli");
                 //contacts.add("bob");
                 //Log.i("dataaaaaaaaaaaaa",""+contacts);
-                m = serverAPI.registerContacts(getUserName(), contacts);
+                serverAPI.registerContacts(getUserName(), contacts);
                 login=true;
                 //push listener
 
@@ -280,6 +291,7 @@ public class SettingsActivity extends AppCompatActivity {
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                logout = true;
                 serverAPI.logout(getUserName(),myCrypto);
             }
         });
@@ -294,55 +306,30 @@ public class SettingsActivity extends AppCompatActivity {
         getPreferences(Context.MODE_PRIVATE).edit().putString("ServerName",serverName).commit();
     }
 
-    private final Runnable m_Runnable = new Runnable()
-    {
+    private final Runnable m_Runnable = new Runnable() {
         public void run()
 
         {
             //SettingsActivity.serverAPI.startPushListener("Hemankita");
-            if(login) {
+            if (login && !logout) {
                 ContactDBHelper contList = new ContactDBHelper(getApplicationContext());
                 List<Contact> clist = new ArrayList<Contact>();
-                clist=contList.getAllContacts();
+                clist = contList.getAllContacts();
                 ArrayList<String> contacts = new ArrayList<>();
-                for(int i=0;i<clist.size();i++){
+                for (int i = 0; i < clist.size(); i++) {
                     contacts.add(clist.get(i).getContact());
                 }
-                m=serverAPI.registerContacts(getUserName(), contacts);;
 
-                if (m != null) {
-                    Log.i("Mapped", m.toString());
-
-                    ContactDBHelper c = new ContactDBHelper(getApplicationContext());
-                    Iterator entries = m.entrySet().iterator();
-                    while (entries.hasNext()) {
-                        Map.Entry entry = (Map.Entry) entries.next();
-                        //if (entry.getValue().equals("logged-in")) {
-                        Log.d("tag", "entryvalue  " + entry.getKey().toString());
-                        c.updateContact(entry.getKey().toString(), entry.getValue().toString());
-                        // }
-
-                    }
-
-                   /* muplist=serverAPI.msgval;
-                    if (muplist != null) {
-                        MessageDBHelper msg = new MessageDBHelper(getApplicationContext());
-                        for (int i = 0; i < muplist.size(); i++) {
-                            msg.addMessage(muplist.get(i));
-                        }
-                        msg.close();
-                    }*/
-                    serverAPI.startPushListener("Hemankita");
-                }
-
-
-
-
-
+                serverAPI.startPushListener("Hemankita");
             }
-            SettingsActivity.this.handler.postDelayed(m_Runnable, 3000);
-        }
+
+
+
+
+        SettingsActivity.this.handler.postDelayed(m_Runnable,3000);
+    }
 
     };
+
 
 }

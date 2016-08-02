@@ -37,10 +37,6 @@ import javax.crypto.SecretKey;
 public class ServerAPI {
     public final String API_VERSION = "0.4.0";
     private static String LOG       = "ServerAPI";
-    public static HashMap<String,String> m = new HashMap();
-    public static ArrayList<Message> msg = new ArrayList<>();
-    public static HashMap<String,ServerAPI.UserInfo> umap = new HashMap<>();
-    public static ArrayList<Message> msgval = new ArrayList<>();
 
     private static ServerAPI ourInstance;
 
@@ -69,7 +65,7 @@ public class ServerAPI {
     private String myServerPort = "25666";
 
     private String makeURL(String... args){
-        return "http://"+myServerName+":"+myServerPort+"/"+ TextUtils.join("/",args);
+        return "http://"+myServerName+":"+myServerPort+"/"+TextUtils.join("/",args);
     }
 
     private void getServerAddress(final String servername){
@@ -78,7 +74,7 @@ public class ServerAPI {
             public void run() {
                 super.run();
                 try {
-                    Log.d(LOG,"Address is: "+ InetAddress.getByName(servername).getHostAddress());
+                    Log.d(LOG,"Address is: "+InetAddress.getByName(servername).getHostAddress());
                     getStringCommand(makeURL("get-key"),
                             new Response.Listener<String>() {
                                 @Override
@@ -171,10 +167,6 @@ public class ServerAPI {
                         try {
                             String status = response.getString("status");
                             if(status.equals("ok")) {
-                                umap.put(response.getString("username"),new UserInfo(response.getString("username"),
-                                        response.getString("image"),
-                                        response.getString("key")));
-                                Log.i("tagtagtag",umap.toString());
                                 sendUserInfo(new UserInfo(response.getString("username"),
                                         response.getString("image"),
                                         response.getString("key")));
@@ -195,8 +187,7 @@ public class ServerAPI {
                 });
     }
 
-    public boolean login(final String username,final Crypto crypto) {
-        boolean login = false;
+    public void login(final String username,final Crypto crypto) {
         if(serverKey!=null) {
             getStringCommand(makeURL("get-challenge", username),
                     new Response.Listener<String>() {
@@ -215,11 +206,9 @@ public class ServerAPI {
                             sendCommandFailed("login", error);
                         }
                     });
-            login = true;
         } else {
             sendLoginFailed("server key was null");
         }
-        return login;
     }
 
 
@@ -323,31 +312,30 @@ public class ServerAPI {
         }
     }
 
-    public HashMap<String,String> registerContacts(final String username, ArrayList<String> names){
+    public void registerContacts(String username, final ArrayList<String> names){
         final JSONObject json = new JSONObject();
-        final ArrayList<String> n = names;
-        Log.i("Namesssssssssssss",""+n);
-
         try {
             json.put("username",username);
             json.put("friends",new JSONArray(names));
-
             putJSONCommand(makeURL("register-friends"), json,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
-
                             Log.d(LOG, "register friends response " + jsonObject);
-                            for(int i=0;i<n.size();i++) {
-                                try {
-                                    Log.d("tag", "register friendssss   "+n.get(i)+" " + jsonObject.getJSONObject("friend-status-map").getString(n.get(i)));
-                                    m.put(n.get(i),jsonObject.getJSONObject("friend-status-map").getString(n.get(i)));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                            try {
+                                JSONObject status = jsonObject.getJSONObject("friend-status-map");
+                                for(String friend : names){
+                                    if(status.getString(friend).equals("logged-in")){
+                                        sendContactLogin(friend);
+                                    } else {
+                                        sendContactLogout(friend);
+                                    }
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        }
 
+                        }
                     },
                     new Response.ErrorListener() {
                         @Override
@@ -358,66 +346,12 @@ public class ServerAPI {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("fffffff", " m  "+m);
-        return m;
-    }
-
-    public Map returnMap()
-    {
-        Log.d("mappppp"," m in return  "+m);
-        return m;
-    }
-
-    public static Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
-        Map<String, Object> retMap = new HashMap<String, Object>();
-
-        if(json != JSONObject.NULL) {
-            retMap = toMap(json);
-        }
-        return retMap;
-    }
-
-    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            map.put(key, value);
-        }
-        return map;
-    }
-
-    public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            list.add(value);
-        }
-        return list;
     }
 
     /*
      * TODO: This currently only supports polling
      */
-    public ArrayList<Message> startPushListener(final String username){
-        msgval.clear();
+    public void startPushListener(final String username){
         String url = makeURL("wait-for-push",username);
         Log.d(LOG,"waiting for push with "+url);
 
@@ -426,7 +360,7 @@ public class ServerAPI {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        msgval.addAll(handleNotifications(response));
+                        handleNotifications(response);
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -445,13 +379,9 @@ public class ServerAPI {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         pseudoPushQueue.add(jsObjRequest);
-
-        return msgval;
-
     }
 
-    private ArrayList<Message> handleNotification(JSONObject notification){
-        ArrayList<Message> messageval = new ArrayList<>();
+    private void handleNotification(JSONObject notification){
         try {
             String type = notification.getString("type");
             if(type.equals("login")){
@@ -461,12 +391,11 @@ public class ServerAPI {
                 sendContactLogout(notification.getString("username"));
             }
             if(type.equals("message")){
-                messageval = handleMessage(notification.getJSONObject("content"));
+                handleMessage(notification.getJSONObject("content"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return messageval;
     }
 
     private String decryptAES64ToString(String aes64, SecretKey aesKey) throws UnsupportedEncodingException {
@@ -477,8 +406,7 @@ public class ServerAPI {
         return new String(bytes,"UTF-8");
     }
 
-    private ArrayList<Message> handleMessage(JSONObject message){
-
+    private void handleMessage(JSONObject message){
         Log.d(LOG,"Got message "+message);
         try{
             SecretKey aesKey = Crypto.getAESSecretKeyFromBytes(myCrypto.decryptRSA(Base64.decode(message.getString("aes-key"),Base64.NO_WRAP)));
@@ -492,32 +420,22 @@ public class ServerAPI {
             Log.d(LOG,subject+":");
             Log.d(LOG,body);
             Log.d(LOG,"ttl: "+ttl);
-            //Message m = new Message(sender,subject,body,System.currentTimeMillis()+ttl);
-
-            //msg.add(m);
-
             sendMessageDelivered(sender,recipient,subject,body,born,ttl);
         } catch (Exception e) {
             Log.d(LOG,"Failed to parse message",e);
         }
-        for(int i=0;i<msg.size();i++){
-            Log.i("Message in ServerAPI",msg.get(i).getSenderName()+" "+msg.get(i).getSubjectLine());
-        }
-      return msg;
+
     }
 
-
-    private ArrayList<Message> handleNotifications(JSONObject notifications){
-        ArrayList<Message> msgval = new ArrayList<>();
+    private void handleNotifications(JSONObject notifications){
         try {
             JSONArray array = notifications.getJSONArray("notifications");
             for(int index = 0; index < array.length(); index++){
-               msgval = handleNotification(array.getJSONObject(index));
+                handleNotification(array.getJSONObject(index));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       return msgval;
     }
 
     private String base64AESEncrypted(String clearText, SecretKey aesKey){
@@ -633,8 +551,6 @@ public class ServerAPI {
         }
     }
 
-
-
     public interface Listener {
         void onCommandFailed(String commandName, VolleyError volleyError);
         void onGoodAPIVersion();
@@ -716,7 +632,6 @@ public class ServerAPI {
         }
     }
     private void sendUserInfo(UserInfo info){
-        Log.i("User Info","I am in");
         for(Listener listener : myListeners){
             listener.onUserInfo(info);
         }

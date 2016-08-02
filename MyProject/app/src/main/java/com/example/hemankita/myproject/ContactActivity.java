@@ -76,7 +76,7 @@ public class ContactActivity extends AppCompatActivity {
     }
     ImageButton delete_button, search_button;
     Button save_button;
-    TextView public_key;
+    TextView public_key,loginText;
     ImageView contact_image;
     EditText person_name;
     byte[] imageData = {};
@@ -196,12 +196,17 @@ public class ContactActivity extends AppCompatActivity {
                 contact_image = (ImageView) findViewById(R.id.contactImage);
                // settings.serverAPI.getUserInfo(userName);
 
+                loginText = (TextView)findViewById(R.id.loginText);
 
-
-                Log.i("hghfdsfghjk",settings.serverAPI.umap.toString());
+                //Log.i("hghfdsfghjk",settings.serverAPI.umap.toString());
 
                 if (TextUtils.isEmpty(userName)) {
                     person_name.setError("Please enter the name of the person");
+                }
+                else if (!SettingsActivity.login){
+                    loginText.setText("You are not logged in ... This contact is just added to your contact list");
+                    pkey=keyPair.getPublic();
+                    conimage="[B@c191089";
                 }
                 else if (SettingsActivity.login) {
 
@@ -268,8 +273,8 @@ public class ContactActivity extends AppCompatActivity {
 
                 }
                 else{
-                        public_key.setText(publickey);
-                        contact_image.setImageResource(R.drawable.contact);
+
+                       loginText.setText("Only logged in users can be added at this time");
                     }
             }
 
