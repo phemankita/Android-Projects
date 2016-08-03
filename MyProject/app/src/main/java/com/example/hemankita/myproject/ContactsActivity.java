@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ContactsActivity extends AppCompatActivity {
+public class  ContactsActivity extends AppCompatActivity {
 
     ImageButton add_button, settings_contact;
     ListView listView;
