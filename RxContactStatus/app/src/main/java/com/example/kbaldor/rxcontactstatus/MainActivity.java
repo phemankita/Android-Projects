@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
 //                        .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
                           //.take(5)// would only poll five times
-                     //   .takeWhile( <predicate> ) // could stop based on a flag variable
+                        //.takeWhile(<predicate>)
+                        // could stop based on a flag variable
                         .subscribe(new Observer<Notification>() {
                             @Override
                             public void onCompleted() {

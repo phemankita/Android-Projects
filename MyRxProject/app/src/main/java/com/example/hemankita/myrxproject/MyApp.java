@@ -1,17 +1,10 @@
-package com.example.hemankita.myproject;
+package com.example.hemankita.myrxproject;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.spongycastle.util.io.pem.PemObject;
-import org.spongycastle.util.io.pem.PemWriter;
-
-import java.io.IOException;
-import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -51,7 +44,7 @@ public class MyApp extends Application {
         ContactDBHelper condb = new ContactDBHelper(this);
         condb.insertContacts();
         condb.close();
-        sharedpreferences = this.getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
+        sharedpreferences = this.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if(sharedpreferences.getBoolean("keyv",true)) {
             try {
                 SecureRandom random = new SecureRandom();
