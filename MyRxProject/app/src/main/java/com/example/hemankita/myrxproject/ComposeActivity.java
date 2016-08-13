@@ -148,15 +148,17 @@ public class ComposeActivity extends AppCompatActivity {
                     } catch (InvalidKeySpecException e) {
                         e.printStackTrace();
                     }
+
+                if(SettingsActivity.login) {
                     Observable.just(0) // the value doesn't matter, it just kicks things off
                             .observeOn(Schedulers.newThread())
                             //.subscribeOn(Schedulers.newThread())
-                            .flatMap(new SendMessage(new Object(),keyP,uName,to_text.getText().toString()
-                                    ,to_subject.getText().toString(),
+                            .flatMap(new SendMessage(new Object(), keyP, uName, to_text.getText().toString()
+                                    , to_subject.getText().toString(),
                                     to_body.getText().toString(),
                                     System.currentTimeMillis(),
                                     (long) 15000))
-                           // .observeOn(AndroidSchedulers.mainThread())
+                            // .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<String>() {
                                 @Override
                                 public void onCompleted() {
@@ -165,16 +167,16 @@ public class ComposeActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onError(Throwable e) {
-                                   Log.d("LOGGG","ERROR"+e.getMessage());
+                                    Log.d("LOGGG", "ERROR" + e.getMessage());
                                 }
 
                                 @Override
                                 public void onNext(String s) {
-                                    Log.i("Message encrypted",""+encrypt);
+                                    Log.i("Message encrypted", "" + encrypt);
                                     //Toast.makeText(getApplicationContext(), "Message Encrypted " +encrypt , Toast.LENGTH_LONG).show();
                                 }
                             });
-
+                }
                // }
                 /*else{
                     Toast.makeText(getApplicationContext(), "Message not sent ... USer is offline " , Toast.LENGTH_LONG).show();

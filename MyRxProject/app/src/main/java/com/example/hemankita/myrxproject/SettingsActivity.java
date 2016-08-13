@@ -127,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
                             public void onCompleted() {
 
                                 // now that we have the initial state, start polling for updates
-                           // if(logout==false) {
+                                if(!logout) {
                                 Observable.interval(0, 5, TimeUnit.SECONDS, Schedulers.newThread())
                                         .subscribeOn(Schedulers.newThread())
                                         .flatMap(new StartPush(myCrypto, server_name, uName, contacts))
@@ -183,7 +183,7 @@ public class SettingsActivity extends AppCompatActivity {
                                             }
                                         });
                             }
-                            //}
+                        }
 
                             @Override
                             public void onError(Throwable e) {
