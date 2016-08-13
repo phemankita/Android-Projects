@@ -178,9 +178,9 @@ public class ComposeActivity extends AppCompatActivity {
                             });
                 }
                // }
-                /*else{
+                else{
                     Toast.makeText(getApplicationContext(), "Message not sent ... USer is offline " , Toast.LENGTH_LONG).show();
-                }*/
+                }
 
 
                 startActivity(saveIntent);

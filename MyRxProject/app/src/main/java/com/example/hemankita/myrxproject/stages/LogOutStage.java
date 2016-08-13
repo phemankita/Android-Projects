@@ -1,5 +1,6 @@
 package com.example.hemankita.myrxproject.stages;
 
+import com.example.hemankita.myrxproject.SettingsActivity;
 import com.example.hemankita.myrxproject.WebHelper;
 
 import org.json.JSONObject;
@@ -28,6 +29,9 @@ public class LogOutStage implements Func1<String, Observable<String>> {
             userDetails.put("username",username);
             userDetails.put("response",challenge_response);
             JSONObject response = WebHelper.JSONPut(server+"/logout",userDetails);
+            if (response.getString("status").equals("ok")) {
+                SettingsActivity.logout=true;
+            }
             return Observable.just(response.getString("status"));
         } catch (Exception e) {
             e.printStackTrace();
